@@ -14,8 +14,10 @@ const Tours = () => {
   const { apiData: tourCount } = useFetch(`${BASE_URL}/api/tour/count`);
 
   useEffect(() => {
-    const pages = Math.ceil(tourCount / 12);
-    setPageCount(pages);
+    if (tourCount && typeof tourCount.count === 'number') {
+      const pages = Math.ceil(tourCount.count / 12);
+      setPageCount(pages);
+    }
     window.scrollTo(0, 0);
   }, [page, tourCount, tours]);
 
