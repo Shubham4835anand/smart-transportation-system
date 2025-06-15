@@ -7,13 +7,13 @@ import {
   deleteTour,
   getTourBySearch,
   getFeaturedTour,
-  getTourCount
+  getTourCount,
 } from '../controllers/tourController.js';
-import { verifyAdmin, verifyToken} from '../middleware/authMiddleware.js';
-
+import { verifyAdmin, verifyToken } from '../middleware/authMiddleware.js';
 
 const router = express.Router();
 
+router.get('/tour/:id', getTourById);
 router.get('/', getAllTours);
 router.get('/search', getTourBySearch);
 router.get('/featured', getFeaturedTour);

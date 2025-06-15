@@ -23,7 +23,7 @@ const TourDetails = () => {
     });
   }, []);
 
-  const { apiData: tour, error } = useFetch(`${BASE_URL}/tour/${id}`, {
+  const { apiData: tour, error } = useFetch(`${BASE_URL}/api/tour/${id}`, {
     method: 'GET',
   });
   const {
