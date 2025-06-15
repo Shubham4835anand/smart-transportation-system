@@ -20,7 +20,7 @@ mongoose
   .catch((err) => console.log(err));
 
 // Middleware for CORS and JSON parsing
-const allowedOrigins = ['http://localhost:5173'];
+const allowedOrigins = ['https://smart-transportation-system-1.onrender.com'];
 app.use(
   cors({
     origin: function (origin, callback) {
