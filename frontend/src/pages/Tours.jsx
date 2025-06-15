@@ -8,8 +8,10 @@ import SearchTours from '../components/Search/SearchTours';
 const Tours = () => {
   const [pageCount, setPageCount] = useState(0);
   const [page, setPage] = useState(0);
-  const { apiData: tours, error } = useFetch(`${BASE_URL}/tour?page=${page}`);
-  const { apiData: tourCount } = useFetch(`${BASE_URL}/tour/count`);
+  const { apiData: tours, error } = useFetch(
+    `${BASE_URL}/api/tour?page=${page}`
+  );
+  const { apiData: tourCount } = useFetch(`${BASE_URL}/api/tour/count`);
 
   useEffect(() => {
     const pages = Math.ceil(tourCount / 12);
