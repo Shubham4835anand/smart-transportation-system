@@ -107,4 +107,18 @@ const deleteBooking = async (req, res) => {
   }
 };
 
-export { createBooking, getBooking, getAllBookings, deleteBooking };
+const getUserBookings = async (req, res) => {
+  try {
+    const bookings = await Booking.find({ userId: req.params.userId });
+    res.status(200).json({ success: true, data: bookings });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+};
+export {
+  createBooking,
+  getBooking,
+  getAllBookings,
+  deleteBooking,
+  getUserBookings,
+};
