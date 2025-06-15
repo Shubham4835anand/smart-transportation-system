@@ -19,7 +19,7 @@ import LiveMap from '../components/LiveMap';
 const Router = () => {
   return (
     <Routes>
-      <Route path='/' element={<Navigate to='/' />} />
+      <Route path='/' element={<Navigate to='/home' />} />
       <Route path='/home' element={<Home />} />
       <Route path='/tours' element={<Tours />} />
       <Route path='/live-map' element={<LiveMap />} />
