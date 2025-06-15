@@ -8,9 +8,7 @@ import SearchTours from '../components/Search/SearchTours';
 const Tours = () => {
   const [pageCount, setPageCount] = useState(0);
   const [page, setPage] = useState(0);
-  const { apiData: tours, error } = useFetch(
-    `${BASE_URL}/api/tour?page=${page}`
-  );
+  const { apiData: tours, error } = useFetch(`${BASE_URL}/api/tour`);
   const { apiData: tourCount } = useFetch(`${BASE_URL}/api/tour/count`);
 
   useEffect(() => {
