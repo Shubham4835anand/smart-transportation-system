@@ -1,33 +1,24 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
-const useFetch = (url) => {
+const useFetch = (url, options = {}) => {
   const [apiData, setApiData] = useState(null);
   const [error, setError] = useState(null);
 
   useEffect(() => {
+    const controller = new AbortController();
     const fetchData = async () => {
       try {
-        const res = await fetch(url);
-        if (!res.ok) throw new Error('Failed to fetch');
-
-        const result = await res.json();
-        console.log('API result:', result);
-
-        // Handle different response shapes
-        if (Array.isArray(result)) {
-          setApiData(result); // ← backend returns [ { tour1 }, { tour2 } ]
-        } else if (Array.isArray(result.data)) {
-          setApiData(result.data); // ← backend returns { data: [ { tour1 }, ... ] }
-        } else {
-          throw new Error('Unexpected API format');
-        }
+        const res = await fetch(url, { ...options, signal: controller.signal });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.message || 'Failed to fetch');
+        setApiData(data.data); // 👈 make sure it's data.data if your backend wraps response like { data: {...} }
       } catch (err) {
-        console.error('Fetch error:', err.message);
-        setError(err.message);
+        if (err.name !== 'AbortError') setError(err.message);
       }
     };
 
     fetchData();
+    return () => controller.abort();
   }, [url]);
 
   return { apiData, error };
