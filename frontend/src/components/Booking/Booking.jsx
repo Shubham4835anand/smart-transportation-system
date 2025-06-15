@@ -44,27 +44,54 @@ const Booking = ({ price, title, reviewsArray, avgRating }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    if (!user) {
+      toast.error('Please Sign In first');
+      return;
+    }
+
+    const {
+      userId,
+      fullName,
+      phone,
+      date,
+      totalPrice,
+      tourName,
+      maxGroupSize,
+    } = data;
+
+    if (
+      !userId ||
+      !fullName ||
+      !phone ||
+      !date ||
+      !totalPrice ||
+      !tourName ||
+      !maxGroupSize
+    ) {
+      toast.error('All fields are required');
+      return;
+    }
+
     try {
-      if (user) {
-        const response = await fetch(`${BASE_URL}/api/booking`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(data),
-        });
-        console.log(data);
-        const result = await response.json();
-        if (response.ok) {
-          toast.success('Booked');
-          navigate('/booked');
-        } else {
-          toast.error(result.message);
-        }
+      const response = await fetch(`${BASE_URL}/api/booking`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        toast.success('Booked');
+        navigate('/booked');
       } else {
-        toast.error('Please Sign In first');
+        toast.error(result.message || 'Booking failed');
+        console.error('Server response:', result);
       }
     } catch (err) {
+      console.error('Fetch error:', err);
       toast.error('Server not responding');
     }
   };

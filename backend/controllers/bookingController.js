@@ -1,7 +1,8 @@
 // bookingController.js
 
-import Booking from "../models/Booking.js";
+import Booking from '../models/Booking.js';
 
+// Create a new booking
 const createBooking = async (req, res) => {
   try {
     const {
@@ -21,15 +22,15 @@ const createBooking = async (req, res) => {
       !phone ||
       !date ||
       !totalPrice ||
-      !maxGroupSize ||
-      !tourName
+      !tourName ||
+      !maxGroupSize
     ) {
       return res
         .status(400)
-        .json({ message: "All booking details are required" });
+        .json({ message: 'All booking details are required' });
     }
 
-    // Create a new booking
+    // Create and save the booking
     const newBooking = new Booking({
       userId,
       fullName,
@@ -39,16 +40,17 @@ const createBooking = async (req, res) => {
       tourName,
       maxGroupSize,
     });
+
     await newBooking.save();
 
     res.status(201).json({
       success: true,
-      message: "Booking created successfully",
-      newBooking,
+      message: 'Booking created successfully',
+      data: newBooking,
     });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Internal Server Error" });
+    console.error('Error creating booking:', error);
+    res.status(500).json({ message: 'Internal Server Error' });
   }
 };
 
@@ -56,33 +58,32 @@ const createBooking = async (req, res) => {
 const getBooking = async (req, res) => {
   try {
     const bookingId = req.params.id;
-    const booking = await Booking.find({ userId: bookingId }).sort({
-      timestamps: 1,
-    });
+    const booking = await Booking.findById(bookingId);
 
     if (!booking) {
-      return res.status(404).json({ message: "Booking not found" });
+      return res.status(404).json({ message: 'Booking not found' });
     }
 
     res.status(200).json({ success: true, data: booking });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Internal Server Error" });
+    console.error('Error fetching booking:', error);
+    res.status(500).json({ message: 'Internal Server Error' });
   }
 };
 
 // Get all bookings
 const getAllBookings = async (req, res) => {
   try {
-    const bookings = await Booking.find().sort({
-      updatedAt: -1,
+    const bookings = await Booking.find().sort({ updatedAt: -1 });
+
+    res.status(200).json({
+      success: true,
+      count: bookings.length,
+      data: bookings,
     });
-    res
-      .status(200)
-      .json({ success: true, data: bookings, count: bookings.length });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Internal Server Error" });
+    console.error('Error fetching all bookings:', error);
+    res.status(500).json({ message: 'Internal Server Error' });
   }
 };
 
@@ -93,15 +94,16 @@ const deleteBooking = async (req, res) => {
     const deletedBooking = await Booking.findByIdAndDelete(bookingId);
 
     if (!deletedBooking) {
-      return res.status(404).json({ message: "Booking not found" });
+      return res.status(404).json({ message: 'Booking not found' });
     }
 
-    res
-      .status(200)
-      .json({ success: true, message: "Booking deleted successfully" });
+    res.status(200).json({
+      success: true,
+      message: 'Booking deleted successfully',
+    });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Internal Server Error" });
+    console.error('Error deleting booking:', error);
+    res.status(500).json({ message: 'Internal Server Error' });
   }
 };
 
