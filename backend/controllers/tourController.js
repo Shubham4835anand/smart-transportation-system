@@ -1,38 +1,38 @@
-import Tour from "../models/Tour.js";
+import Tour from '../models/Tour.js';
 
 const getAllTours = async (req, res) => {
-  const page = parseInt(req.query.page);
+  const page = parseInt(req.query.page) || 0;
   try {
     const tours = await Tour.find()
       .sort({ createdAt: -1 })
-      .populate("reviews")
+      .populate('reviews')
       .skip(page * 12)
       .limit(12);
 
-    res.status(200).json({ succes: true, data: tours, count: tours.length });
+    res.status(200).json(tours);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Internal Server Error" });
+    res.status(500).json({ message: 'Internal Server Error' });
   }
 };
 
 const getSingleTour = async (req, res) => {
   try {
     const tourId = req.params.id;
-    const tour = await Tour.findById(tourId).populate("reviews");
+    const tour = await Tour.findById(tourId).populate('reviews');
 
     if (!tour) {
-      return res.status(404).json({ message: "Tour not found" });
+      return res.status(404).json({ message: 'Tour not found' });
     }
 
     res.status(200).json({
       success: true,
       data: tour,
-      message: "Data Received Successfully",
+      message: 'Data Received Successfully',
     });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Internal Server Error" });
+    res.status(500).json({ message: 'Internal Server Error' });
   }
 };
 
@@ -55,10 +55,10 @@ const createTour = async (req, res) => {
 
     res
       .status(201)
-      .json({ message: "Tour created successfully", data: newTour });
+      .json({ message: 'Tour created successfully', data: newTour });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Internal Server Error" });
+    res.status(500).json({ message: 'Internal Server Error' });
   }
 };
 
@@ -75,13 +75,13 @@ const updateTour = async (req, res) => {
     );
 
     if (!newTour) {
-      return res.status(404).json({ message: "Tour not found" });
+      return res.status(404).json({ message: 'Tour not found' });
     }
 
-    res.status(200).json({ message: "Tour Updated Successfully", newTour });
+    res.status(200).json({ message: 'Tour Updated Successfully', newTour });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Internal Server Error" });
+    res.status(500).json({ message: 'Internal Server Error' });
   }
 };
 
@@ -91,13 +91,13 @@ const deleteTour = async (req, res) => {
     const deletedTour = await Tour.findByIdAndDelete(tourId);
 
     if (!deletedTour) {
-      return res.status(404).json({ message: "Tour not found" });
+      return res.status(404).json({ message: 'Tour not found' });
     }
 
-    res.status(200).json({ message: "Tour deleted successfully" });
+    res.status(200).json({ message: 'Tour deleted successfully' });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Internal Server Error" });
+    res.status(500).json({ message: 'Internal Server Error' });
   }
 };
 
@@ -110,21 +110,21 @@ const getTourBySearch = async (req, res) => {
     if (!searchTerm && (isNaN(minPrice) || isNaN(maxPrice))) {
       return res
         .status(400)
-        .json({ message: "Search term or price range is required" });
+        .json({ message: 'Search term or price range is required' });
     }
 
     // Build the search criteria based on the provided parameters
     const searchCriteria = {};
 
     if (searchTerm) {
-      if (typeof searchTerm !== "string") {
+      if (typeof searchTerm !== 'string') {
         return res
           .status(400)
-          .json({ message: "Search term must be a string" });
+          .json({ message: 'Search term must be a string' });
       }
       searchCriteria.$or = [
-        { title: { $regex: new RegExp(`${searchTerm}`, "i") } }, // Match substring in title
-        { city: { $regex: new RegExp(`${searchTerm}`, "i") } }, // Match substring in city
+        { title: { $regex: new RegExp(`${searchTerm}`, 'i') } }, // Match substring in title
+        { city: { $regex: new RegExp(`${searchTerm}`, 'i') } }, // Match substring in city
       ];
     }
 
@@ -133,10 +133,10 @@ const getTourBySearch = async (req, res) => {
     }
 
     // Perform the search
-    const matchingTours = await Tour.find(searchCriteria).populate("reviews");
+    const matchingTours = await Tour.find(searchCriteria).populate('reviews');
 
     if (matchingTours.length === 0) {
-      return res.status(404).json({ message: "No matching tours found" });
+      return res.status(404).json({ message: 'No matching tours found' });
     }
 
     res.status(200).json({
@@ -146,7 +146,7 @@ const getTourBySearch = async (req, res) => {
     });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Internal Server Error" });
+    res.status(500).json({ message: 'Internal Server Error' });
   }
 };
 
@@ -154,11 +154,11 @@ const getFeaturedTour = async (req, res) => {
   try {
     const featuredTours = await Tour.find({ featured: true })
       .sort({ reviews: -1 })
-      .populate("reviews")
+      .populate('reviews')
       .limit(12);
 
     if (featuredTours.length === 0) {
-      return res.status(404).json({ message: "No featured tours found" });
+      return res.status(404).json({ message: 'No featured tours found' });
     }
 
     res.status(200).json({
@@ -168,19 +168,17 @@ const getFeaturedTour = async (req, res) => {
     });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Internal Server Error" });
+    res.status(500).json({ message: 'Internal Server Error' });
   }
 };
 
 const getTourCount = async (req, res) => {
   try {
-    // Get the total count of tours
     const tourCount = await Tour.countDocuments();
-
-    res.status(200).json({ success: true, data: tourCount });
+    res.status(200).json(tourCount);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Internal Server Error" });
+    res.status(500).json({ message: 'Internal Server Error' });
   }
 };
 

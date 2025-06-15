@@ -5,7 +5,7 @@ import TourCard from '../../shared/TourCard';
 
 const FeaturedTourList = () => {
   const { apiData: featuredToursData, error } = useFetch(
-    `${BASE_URL}/tour/featured`
+    `${BASE_URL}/api/tour/featured`
   );
 
   return (

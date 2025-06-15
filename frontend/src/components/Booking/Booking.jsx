@@ -46,7 +46,7 @@ const Booking = ({ price, title, reviewsArray, avgRating }) => {
 
     try {
       if (user) {
-        const response = await fetch(`${BASE_URL}/booking`, {
+        const response = await fetch(`${BASE_URL}/api/booking`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
