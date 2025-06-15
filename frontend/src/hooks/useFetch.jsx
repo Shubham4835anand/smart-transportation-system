@@ -10,8 +10,11 @@ const useFetch = (url, options = {}) => {
       try {
         const res = await fetch(url, { ...options, signal: controller.signal });
         const data = await res.json();
+
         if (!res.ok) throw new Error(data.message || 'Failed to fetch');
-        setApiData(data.data); // 👈 make sure it's data.data if your backend wraps response like { data: {...} }
+
+        // ✅ Fix: Support both { data: ... } or direct response
+        setApiData(data?.data !== undefined ? data.data : data);
       } catch (err) {
         if (err.name !== 'AbortError') setError(err.message);
       }
